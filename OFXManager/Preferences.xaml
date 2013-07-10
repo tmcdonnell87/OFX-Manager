@@ -1,0 +1,77 @@
+﻿<Window x:Class="OFXManager.Preferences"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:src="clr-namespace:OFXManager"
+        Name="PreferencesWindow"
+        Title="User Preferences" Height="300" Background="WhiteSmoke" Width="400" ResizeMode="NoResize">
+    <Window.Resources>
+        <src:EnumBooleanConverter x:Key="EnumConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.Resources>
+            <Style BasedOn="{StaticResource {x:Type RadioButton}}"
+                   x:Key="PreferenceRadioButton"
+                   TargetType="RadioButton">
+                <Setter Property="Margin" Value="10,2,2,2"/>
+            </Style>
+            <Style x:Key="FormButton" 
+                   TargetType="Button"
+                   BasedOn="{StaticResource {x:Type Button}}">
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Padding" Value="16,2"/>
+                <Setter Property="FontSize" Value="12"/>
+            </Style>
+
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock FontSize="16" Margin="16,8" FontWeight="Bold" Text="Saved Information"/>
+        <Border Margin="12" Grid.Row="1" Padding="8" BorderThickness="1" BorderBrush="Black">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Configure the account information saved by the application"
+                           TextWrapping="Wrap"
+                           Margin="4,2,4,12"
+                           FontSize="12"/>
+                <RadioButton Grid.Row="1"
+                             Style="{StaticResource PreferenceRadioButton}"
+                             GroupName="SavePreference"
+                             Name="RadioNone"
+                             IsChecked="{Binding ElementName=PreferencesWindow, Path=Settings.SavePreference, Converter={StaticResource EnumConverter}, ConverterParameter=NONE, Mode=OneWay}"
+                             Content="None" />
+                <RadioButton Content="Institutions only" 
+                             Style="{StaticResource PreferenceRadioButton}"                             
+                             GroupName="SavePreference"
+                             Name="RadioBank"
+                             IsChecked="{Binding ElementName=PreferencesWindow, Path=Settings.SavePreference, Converter={StaticResource EnumConverter}, ConverterParameter=BANK, Mode=OneWay}"
+                             Grid.Row="2"/>
+                <RadioButton Content="Accounts"
+                             IsChecked="{Binding ElementName=PreferencesWindow, Path=Settings.SavePreference, Converter={StaticResource EnumConverter}, ConverterParameter=ACCOUNT, Mode=OneWay}"
+                             Style="{StaticResource PreferenceRadioButton}"                             
+                             GroupName="SavePreference"
+                             Name="RadioAccount"
+                             Grid.Row="3"/>
+                
+            </Grid>
+        </Border>
+        <StackPanel Grid.Row="2"
+                    Margin="8"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left">
+            <Button Content="Accept" Style="{StaticResource FormButton}" Name="Accept" Click="Accept_Click"/>
+            <Button Content="Cancel" Style="{StaticResource FormButton}" Name="Cancel" Click="Cancel_Click"/>
+            
+            
+
+
+        </StackPanel>
+    </Grid>
+</Window>

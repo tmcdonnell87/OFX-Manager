@@ -1,0 +1,31 @@
+﻿<Window x:Class="OFXManager.OFXViewer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        ShowInTaskbar="False"
+        Name="OFXViewerWindow"
+        Title="OFXViewer" Height="600" Width="600">
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="LightBlue" Offset="0.0" />
+                <GradientStop Color="Azure" Offset="0.25" />
+                <GradientStop Color="LightBlue" Offset="0.75" />
+                <GradientStop Color="Azure" Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Margin="16,4" LastChildFill="True" >
+            <Button DockPanel.Dock="Right" Name="ButtonSave" Content="Save and Close" Padding="24,2" Click="ButtonSave_Click"/>
+
+            <TextBlock DockPanel.Dock="Left" Text="{Binding ElementName=OFXViewerWindow, Path=Account, StringFormat=OFX\ Viewer\ -\ {0}}" FontSize="18" FontWeight="Bold"/>
+        </DockPanel>
+        <Border Margin="4" Grid.Row="1" BorderBrush="Black" BorderThickness="2">
+        <ScrollViewer Background="GhostWhite"  >
+            <TextBlock IsEnabled="False" Name="Display" Text="{Binding ElementName=OFXViewerWindow, Path=OFX}" TextWrapping="Wrap"/>
+        </ScrollViewer>
+        </Border>
+    </Grid>
+</Window>

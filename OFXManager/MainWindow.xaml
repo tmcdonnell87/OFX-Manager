@@ -1,0 +1,197 @@
+﻿<Window x:Class="OFXManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+        xmlns:src="clr-namespace:OFXManager"
+        Title="OFX Manager"
+        Name="Root"
+        Closing="Root_Closing"
+        MinHeight="400" MinWidth="450"
+        Height="500" Width="450" 
+        Icon="/OFXManager;component/Resources/OFXIcon.png">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <src:IsNullConverter x:Key="IsNullConverter" />
+        <src:MultiBooleanAndConverter x:Key="MultiBooleanAndConverter"/>
+        <ContextMenu x:Key="RemoveContext">
+            <MenuItem Header="Remove"
+                      Click="MenuItem_RemoveSavedAccount_Click"/>
+        </ContextMenu>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="LightBlue" Offset="0.0" />
+                <GradientStop Color="Azure" Offset="0.25" />
+                <GradientStop Color="LightBlue" Offset="0.75" />
+                <GradientStop Color="Azure" Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.Resources>
+
+
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <Menu>
+                <MenuItem Header="Menu" Name="MenuItem_Menu">
+                    <MenuItem Header="Preferences" Name="MenuItem_Preferences" Click="MenuItem_Preferences_Click"/>
+                    <MenuItem Header="Exit" Name="MenuItem_Exit" Click="MenuItem_Exit_Click"/>
+                </MenuItem>
+                <MenuItem Header="Saved Accounts" 
+                          Name="Menu_Accounts" 
+                          Click="Menu_Accounts_Click"
+                          ItemsSource="{Binding ElementName=Root, Path=Settings.Accounts}"
+                          IsEnabled="{Binding ElementName=Root, Path=Settings.Accounts.Count}" >
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="ContextMenu" Value="{DynamicResource RemoveContext}"/>
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                     
+                </MenuItem>
+            </Menu>
+        </StackPanel>
+        <Border Grid.Row="1" BorderBrush="Silver" BorderThickness="2">
+            <Grid Margin="24,0"
+                  VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Institution: " Margin="2"/>
+                <TextBox Grid.Column="1" Margin="2" Name="TextBox_Search" MinWidth="120" />
+                <Button Grid.Column="1" Grid.Row="1" Name="Button_Search" Content="Search" Padding="12,2,12,2" Margin="2" HorizontalAlignment="Right"  Click="Button_Search_Click" IsEnabled="{Binding ElementName=TextBox_Search, Path=Text.Length}" IsDefault="True" />
+                <ComboBox Name="Combo_Select" 
+                          Margin="12,0,0,0" 
+                          Grid.Column="2"
+                          ItemsSource="{Binding ElementName=Root, Path=Institutions}" 
+                          IsEditable="False"
+                          SelectionChanged="Combo_Select_SelectionChanged"
+                          IsEnabled="{Binding ElementName=Combo_Select, Path=HasItems}">
+  
+                </ComboBox>
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Grid.Column="2"
+                           IsHitTestVisible="False"
+                           Margin="{Binding ElementName=Combo_Select, Path=Margin}"
+                           Text="Select an Insititution"
+                           Opacity="0.5"> 
+                    
+                   <TextBlock.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=Combo_Select, Path=SelectedItem, Converter={StaticResource IsNullConverter}}"
+                                             Value="False">
+                                    <Setter Property="TextBlock.Visibility"
+                                            Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=Combo_Select, Path=IsEnabled}"
+                                                   Value="False">
+                                    <Setter Property="TextBlock.Visibility"
+                                            Value="Collapsed"/>
+                                </DataTrigger>
+
+                            </Style.Triggers>
+                        </Style>
+                   </TextBlock.Style>
+                    
+                </TextBlock>
+            </Grid>
+        </Border>
+        <Border Grid.Row="2" BorderBrush="Silver" BorderThickness="2" >
+            <Grid Name="Grid_Account"
+                  IsEnabled="{Binding ElementName=TextboxHost, Path=Text.Length}"
+                  Margin="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.ColumnSpan="2" FontSize="16" Margin="4" Name="TextboxHost" FontWeight="Bold" HorizontalAlignment="Center" Text="{Binding ElementName=Grid_Account, Path=DataContext.HostInstitution}" />
+                <Grid Grid.Row="1" Margin="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Margin="2" Name="TextBlock_Display" Content="User name" />
+                    <TextBox Name="TextBox_UserName" Grid.Column="1" Text="{Binding UserID}" Margin="2" MinWidth="96"/>
+                    <Label Grid.Row="1" Margin="2" Content="Account Number" />
+                    <TextBox Grid.Row="1" Name="TextBox_Account" Grid.Column="1" Text="{Binding AccountNumber}" Margin="2" MinWidth="96"/>
+                    <Label Grid.Row="2" Content="Password" Margin="2" />
+                    <PasswordBox Margin="2" Grid.Row="2" Name="PasswordBox" PasswordChar="*" Grid.Column="2" DataContextChanged="PasswordBox_DataContextChanged">
+                    </PasswordBox>
+
+                </Grid>
+                <Grid Grid.Row="1"
+                      Grid.Column="1"
+                      Margin="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Label Margin="2" Content="Start date"/>
+                    <DatePicker Margin="2" Name="DateStart" Grid.Column="1" DisplayDateEnd="{Binding ElementName=DateEnd, Path=SelectedDate}" SelectedDate="{x:Static src:DateHelper.RecentMonthStart}">
+                        <DatePicker.BlackoutDates>
+                            <CalendarDateRange End="1/1/1980"/>
+                        </DatePicker.BlackoutDates>
+                    </DatePicker>
+
+                    <Label Margin="2" Grid.Row="1" Content="End date"/>
+                    <DatePicker Margin="2" Name="DateEnd" Grid.Row="1" Grid.Column="1" DisplayDateStart="{Binding ElementName=DateStart,Path=SelectedDate}" SelectedDate="{x:Static sys:DateTime.Today}">
+                        <DatePicker.BlackoutDates>
+                            <CalendarDateRange Start="{x:Static src:DateHelper.Tomorrow}"/>
+                        </DatePicker.BlackoutDates>
+
+                    </DatePicker>
+
+                    <Button Grid.Row="2"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Name="ButtonGetTransactions"
+                            Content="Get Transactions"
+                            Margin="4"
+                            IsDefault="True"
+                            Padding="4,2" Click="ButtonGetTransactions_Click" >
+                        <Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource MultiBooleanAndConverter}">
+                                <Binding ElementName="TextBox_UserName" Path="Text.Length"/>
+                                <!--<Binding ElementName="TextBox_Account" Path="Text.Length"/>-->
+                            </MultiBinding>
+                        </Button.IsEnabled>
+                    </Button>
+
+                </Grid>
+                <Image Grid.ColumnSpan="2" Grid.Row="2" Margin="12" Stretch="Uniform" Source="/OFXManager;component/Resources/OFXIcon.png" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
